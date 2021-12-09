@@ -25,9 +25,6 @@
     - selinux1: /etc/selinux/config
 
   tasks:
-    - name: ---> edit selinux file <---
-      copy: src={{ selinux0 }} dest={{ selinux1 }}
-
     - name: ---> update packages <---
       yum: name=* state=latest
 
@@ -131,7 +128,7 @@
       service: name=firewalld state=restarted
    
     - name: ---> selinux disable <--- 
-      shell: setenforce 0
+      selinux: state=disabled
 
     - name: ---> copy sshd_config <---
       copy: src={{ ssh_src }} dest={{ ssh_dst }}
