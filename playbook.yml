@@ -4,23 +4,23 @@
   become: yes
   tasks:
     - name: ---> edit /etc/hosts.. <---
-      copy: src=/wsrskillscloud-filin/etchosts dest=/etc/hosts
+      copy: src=etchosts dest=/etc/hosts
 
 - name: wsr39
   become: yes
   hosts: all
 
   vars: 
-    - nginx0: /wsrskillscloud-filin/docker-compose.sh
-    - nginx1: /wsrskillscloud-filin/docker-compose.yml
-    - nginx2: /wsrskillscloud-filin/index.html
-    - nginx3: /wsrskillscloud-filin/nginx.conf
-    - nginx4: /wsrskillscloud-filin/Dockerfile-site
-    - nginx5: /wsrskillscloud-filin/Dockerfile-balance
+    - nginx0: docker-compose.sh
+    - nginx1: docker-compose.yml
+    - nginx2: index.html
+    - nginx3: nginx.conf
+    - nginx4: Dockerfile-site
+    - nginx5: Dockerfile-balance
     - nginxout: /skillcloud-nginx/
-    - ssh_src: /wsrskillscloud-filin/sshd_config
+    - ssh_src: sshd_config
     - ssh_dst: /etc/ssh/sshd_config
-    - key_src: /wsrskillscloud-filin/key.pub
+    - key_src: key.pub
 
   tasks:
     - name: ---> update packages <---
