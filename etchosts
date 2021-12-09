@@ -1,0 +1,5 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+192.168.192.62 project_1 skillcloud.wsr 
+192.168.192.63 project_2 skillcloud.wsr 
+192.168.192.64 project_3 skillcloud.wsr

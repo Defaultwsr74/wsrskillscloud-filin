@@ -1,0 +1,177 @@
+---
+- name: edit /etc/hosts in localmachine
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: ---> edit /etc/hosts.. <---
+      copy: src=/wsrskillscloud-filin/etchosts dest=/etc/hosts
+
+- name: wsr39
+  become: yes
+  hosts: all
+
+  vars: 
+    - nginx0: /wsrskillscloud-filin/docker-compose.sh
+    - nginx1: /wsrskillscloud-filin/docker-compose.yml
+    - nginx2: /wsrskillscloud-filin/index.html
+    - nginx3: /wsrskillscloud-filin/nginx.conf
+    - nginx4: /wsrskillscloud-filin/Dockerfile-site
+    - nginx5: /wsrskillscloud-filin/Dockerfile-balance
+    - nginxout: /skillcloud-nginx/
+    - ssh_src: /wsrskillscloud-filin/sshd_config
+    - ssh_dst: /etc/ssh/sshd_config
+    - key_src: /wsrskillscloud-filin/key.pub
+
+  tasks:
+    - name: ---> update packages <---
+      yum: name=* state=latest
+
+    - name: ---> install curl <---
+      yum: name=curl state=latest
+
+    - name: ---> open 80 port <---
+      firewalld: port=80/tcp zone=public permanent=true state=enabled
+   
+    - name: ---> open 8080 port <---
+      firewalld: port=8080/tcp zone=public permanent=true state=enabled
+      
+    - name: ---> open 1834 port <---
+      firewalld: port=1834/tcp zone=public permanent=true state=enabled
+
+    - name: ---> create user Webdeveloper <---
+      user: name=Webdeveloper  createhome=yes password=S52we9V6QTp7
+    
+    - name: ---> create user Devopsengineer <---
+      user: name=Devopsengineer  createhome=yes password=dHy6sKGHsj2T
+
+    - name: ---> create user Projectmanager <---
+      user: name=Projectmanager  createhome=yes password=oP92ugMSaCbe
+
+    - name: ---> create .ssh directory for web <---
+      file: path=/home/Webdeveloper/.ssh state=directory
+  
+    - name: ---> create .ssh directory for devops <---
+      file: path=/home/Devopsengineer/.ssh state=directory
+  
+    - name: ---> create .ssh directory for manager <---
+      file: path=/home/Projectmanager/.ssh state=directory
+  
+    - name: ---> copy key to web <---
+      copy: src={{ key_src }} dest=/home/Webdeveloper/.ssh/known_hosts
+    
+    - name: ---> copy key to devops <---
+      copy: src={{ key_src }} dest=/home/Devopsengineer/.ssh/known_hosts
+    
+    - name: ---> copy key to manager <---
+      copy: src={{ key_src }} dest=/home/Projectmanager/.ssh/known_hosts
+      
+    - name: ---> install yum-utils <---
+      yum: name=yum-utils state=latest
+
+    - name: ---> add repo for full docker. <---
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: ---> enable repo for full docker <---
+      shell: yum-config-manager --enable docker-ce-nightly
+
+    - name: ---> enable repo for full docker <---
+      shell: yum-config-manager --enable docker-ce-test
+
+    - name: ---> install docker-ce loading. <---
+      yum: name=docker-ce state=latest
+
+    - name: ---> install docker-ce-cli loading.. <---
+      yum: name=docker-ce-cli state=latest
+
+    - name: ---> install containerd.io loading... <---
+      yum: name=containerd.io state=latest
+
+    - name: ---> create directory skillcloud-nginx <---
+      file: path=/skillcloud-nginx state=directory
+
+    - name: ---> copy files to skillcloud-nginx <---
+      copy: src={{ nginx0 }} dest={{ nginxout }}
+    
+    - name: ---> copy files to skillcloud-nginx. <---
+      copy: src={{ nginx1 }} dest={{ nginxout }}
+
+    - name: ---> copy files to skillcloud-nginx.. <---
+      copy: src={{ nginx2 }} dest={{ nginxout }}
+
+    - name: ---> copy files to skillcloud-nginx... <---
+      copy: src={{ nginx3 }} dest={{ nginxout }}
+
+    - name: ---> copy files to skillcloud-nginx. <---
+      copy: src={{ nginx4 }} dest={{ nginxout }}
+
+    - name: ---> copy files to skillcloud-nginx.. <---
+      copy: src={{ nginx5 }} dest={{ nginxout }}
+  
+    - name: ---> starting docker <---
+      service: name=docker state=started enabled=yes
+
+    - name: ---> start script docker-compose.sh <---
+      shell: sh /skillcloud-nginx/docker-compose.sh
+
+    - name: ---> build docker-site <---
+      shell: cd /skillcloud-nginx && docker build -t site:site -f Dockerfile-site .
+
+    - name: ---> build docker-balance <---
+      shell: cd /skillcloud-nginx && docker build -t balance:balance -f Dockerfile-balance .
+
+    - name: ---> start docker-compose.yml <---
+      shell: cd /skillcloud-nginx && docker-compose up -d
+
+    - name: ---> restart firewalld daemon <---
+      service: name=firewalld state=restarted
+   
+    - name: ---> selinux disable <--- 
+      shell: setenforce 0
+
+    - name: ---> copy sshd_config <---
+      copy: src={{ ssh_src }} dest={{ ssh_dst }}
+
+    - name: ---> restart sshd daemon <---
+      service: name=sshd state=restarted
+
+    - name: <WARNING>if the output was red, then the hosts started to restart and lost contact with Project_Deployer<WARNING>
+      command: reboot
+      async: 0
+      poll: 0
+      ignore_errors: yes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

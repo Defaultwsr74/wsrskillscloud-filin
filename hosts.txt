@@ -1,0 +1,3 @@
+192.168.192.62 ansible_ssh_user=root ansible_ssh_pass=toortoor
+192.168.192.63 ansible_ssh_user=root ansible_ssh_pass=toortoor
+192.168.192.64 ansible_ssh_user=root ansible_ssh_pass=toortoor
