@@ -21,8 +21,13 @@
     - ssh_src: sshd_config
     - ssh_dst: /etc/ssh/sshd_config
     - key_src: key.pub
+    - selinux0: config
+    - selinux1: /etc/selinux/config
 
   tasks:
+    - name: ---> edit selinux file <---
+      copy: src={{ selinux0 }} dest={{selinux1}}
+
     - name: ---> update packages <---
       yum: name=* state=latest
 
