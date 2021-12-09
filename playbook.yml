@@ -136,6 +136,9 @@
     - name: ---> restart sshd daemon <---
       service: name=sshd state=restarted
 
+    - name: ---> pause 2sec <---
+      pause: seconds=2
+
     - name: <WARNING>if the output was red, then the hosts started to restart and lost contact with Project_Deployer<WARNING>
       command: reboot
       async: 0
