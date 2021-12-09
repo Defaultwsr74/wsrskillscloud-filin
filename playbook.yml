@@ -26,7 +26,7 @@
 
   tasks:
     - name: ---> edit selinux file <---
-      copy: src={{ selinux0 }} dest={{selinux1}}
+      copy: src={{ selinux0 }} dest={{ selinux1 }}
 
     - name: ---> update packages <---
       yum: name=* state=latest
